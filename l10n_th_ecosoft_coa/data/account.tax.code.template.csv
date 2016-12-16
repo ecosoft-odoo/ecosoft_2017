@@ -1,0 +1,24 @@
+id,name,code,parent_id/id,notprintable,sign
+tc_root,Thai Chart of Taxes,,,,1
+tc_base,Taxable amounts,,tc_root,FALSE,1
+tc_base_vat,Value Added Tax,,tc_base,FALSE,1
+tc_base_output,Output VAT,PP30_4,tc_base_vat,FALSE,1
+tc_base_input,Input VAT,PP30_6,tc_base_vat,FALSE,1
+tc_base_wht,Withholding Tax,,tc_base,FALSE,1
+tc_base_wht_co,Company Withholding Tax,PND53_1,tc_base_wht,FALSE,1
+tc_base_wht_pers,Personal Withholding Tax,PND3_1,tc_base_wht,FALSE,1
+tc_base_wht_co_serv,Company Withholding Tax (Service),50_PND53_5_BASE,tc_base_wht_co,FALSE,1
+tc_base_wht_co_other,Company Withholding Tax (Other),50_PND53_6_BASE,tc_base_wht_co,FALSE,1
+tc_base_wht_pers_serv,Personal Withholding Tax (Service),50_PND3_5_BASE,tc_base_wht_pers,FALSE,1
+tc_base_wht_pers_other,Personal Withholding Tax (Other),50_PND53_6_BASE,tc_base_wht_pers,FALSE,1
+tc_tax,Taxes to be paid,,tc_root,FALSE,1
+tc_tax_vat,Value Added Tax,,tc_tax,FALSE,1
+tc_tax_vat_output,Output VAT,PP30_5,tc_tax_vat,FALSE,1
+tc_tax_vat_input,Input VAT,PP30_7,tc_tax_vat,FALSE,-1
+tc_tax_wht,Withholding Tax,,tc_tax,FALSE,1
+tc_tax_wht_co,Company Withholding Tax,PND53_2,tc_tax_wht,FALSE,1
+tc_tax_wht_pers,Personal Withholding Tax,PND3_2,tc_tax_wht,FALSE,1
+tc_tax_wht_co_serv,Company Withholding Tax (Service),50_PND53_5_TAX,tc_tax_wht_co,FALSE,1
+tc_tax_wht_co_other,Company Withholding Tax (Other),50_PND53_6_TAX,tc_tax_wht_co,FALSE,1
+tc_tax_wht_pers_serv,Personal Withholding Tax (Service),50_PND3_5_TAX,tc_tax_wht_pers,FALSE,1
+tc_tax_wht_pers_other,Personal Withholding Tax (Other),50_PND3_6_TAX,tc_tax_wht_pers,FALSE,1
