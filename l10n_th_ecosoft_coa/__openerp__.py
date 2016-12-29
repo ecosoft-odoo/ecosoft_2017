@@ -42,7 +42,8 @@ Thai accounting chart for ECOSOFT and localization.
         'data/ir.actions.todo.csv',
         ],
     'installable': True,
-    'images': ['images/config_chart_l10n_th.jpeg','images/l10n_th_chart.jpeg'],
+    'images': ['images/config_chart_l10n_th.jpeg',
+               'images/l10n_th_chart.jpeg'],
 }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
