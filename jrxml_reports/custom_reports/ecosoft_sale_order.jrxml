@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Purchase Order" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="1.6500000000000126"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="432"/>
+	<property name="ireport.y" value="0"/>
 	<property name="OPENERP_RELATIONS" value="[&quot;order_line&quot;]"/>
 	<style name="table" lineSpacing="Single">
 		<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
@@ -440,13 +440,13 @@ Tel: +66 (0) 2 105 6494]]></text>
 				<text><![CDATA[Tax ID. 0105554048641 สำนักงานใหญ่]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="19" width="555" height="40"/>
+				<reportElement x="0" y="19" width="555" height="53"/>
 				<textElement lineSpacing="Single">
 					<font fontName="Monospaced" size="8" isBold="false" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
 				<text><![CDATA[ECOSOFT CO., LTD.
-ชั้น 37 อาคารสาทร สแควร์ ห้อง S-02 เลขที่ 98 ถนนสาทรเหนือ แขวงสีลม เขตบางรัก กรุงเทพฯ ประเทศไทย 10500
-37th Floor Sathorn Square Tower, Room S-02, 98 North Sathorn Road, Silom, Bangrak, Bangkok, Thailand 10500]]></text>
+287 อาคารลิเบอร์ตี้สแควร์ ชั้น 2 ถนนสีลม แขวงสีลม เขต บางรัก กรุงเทพฯ 10500
+287 Liberty Square Building, 2nd Floor, Silom Road, Silom, Bangrak, Bangkok 10500]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
