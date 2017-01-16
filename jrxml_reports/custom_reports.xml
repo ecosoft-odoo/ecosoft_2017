@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<openerp>
+<data>
+
+    <report string="Quotation / Order (ECOSOFT)"
+        model="sale.order"
+        auto="True"
+        name="sale.order.ecosoft"
+        rml="jrxml_reports/custom_reports/ecosoft_sale_order.jrxml"
+        id="sale_order_ecosoft" 
+        menu="True"
+        header="False"
+        />    
+    <record id="sale_order_ecosoft" model="ir.actions.report.xml">
+        <field name="jasper_report">True</field>
+        <field name="jasper_output">pdf</field>
+    </record>
+    
+    
+    <report string="Invoice (ECOSOFT)"
+        model="account.invoice"
+        auto="True"
+        name="account.invoice.ecosoft"
+        rml="jrxml_reports/custom_reports/ecosoft_account_invoice.jrxml"
+        id="account_invoice_ecosoft" 
+        menu="True"
+        header="False"
+        />    
+    <record id="account_invoice_ecosoft" model="ir.actions.report.xml">
+        <field name="jasper_report">True</field>
+        <field name="jasper_output">pdf</field>
+    </record>    
+
+    <report string="Receipt (ECOSOFT)"
+        model="account.voucher"
+        auto="True"
+        name="account.voucher.ecosoft"
+        rml="jrxml_reports/custom_reports/ecosoft_receipt.jrxml"
+        id="account_receipt_ecosoft" 
+        menu="True"
+        header="False"
+        />
+    <record id="account_receipt_ecosoft" model="ir.actions.report.xml">
+        <field name="jasper_report">True</field>
+        <field name="jasper_output">pdf</field>
+    </record>   
+    
+</data>
+</openerp>

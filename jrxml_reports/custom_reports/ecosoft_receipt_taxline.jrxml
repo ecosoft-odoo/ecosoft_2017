@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ecosoft_account_invoice_subreport1" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.143588810000002"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="OPENERP_RELATIONS" value="[&quot;tax_line&quot;]"/>
+	<style name="table" lineSpacing="Single">
+		<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF" lineSpacing="Single">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF" lineSpacing="Single">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF" lineSpacing="Single">
+		<box topPadding="3" leftPadding="1" bottomPadding="1" rightPadding="1">
+			<topPen lineWidth="0.0" lineColor="#000000"/>
+			<leftPen lineWidth="1.0"/>
+			<bottomPen lineWidth="0.0" lineColor="#000000"/>
+			<rightPen lineWidth="1.0"/>
+		</box>
+	</style>
+	<parameter name="voucher_id" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select
+-- Withholding Taxes
+at.name wht_name, at.description wht_description, avt.name2 as wht_name2, abs(avt.base) as tax_base, abs(avt.amount) as tax_amount
+from account_voucher av
+-- Join Tax Table
+join account_voucher_tax avt on av.id = avt.voucher_id
+join account_tax at on at.id = avt.tax_id
+where av.id = $P{voucher_id}]]>
+	</queryString>
+	<field name="wht_name" class="java.lang.String"/>
+	<field name="wht_description" class="java.lang.String"/>
+	<field name="wht_name2" class="java.lang.String"/>
+	<field name="tax_base" class="java.math.BigDecimal"/>
+	<field name="tax_amount" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="164" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" lineSpacing="Single" markup="none">
+					<font fontName="Monospaced" size="9" isBold="false" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{wht_name2} == null ? $F{wht_description} : $F{wht_name2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement style="table" mode="Opaque" x="198" y="0" width="75" height="15" backcolor="#80C243"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Monospaced" size="9" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{tax_amount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
