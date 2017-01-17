@@ -327,7 +327,7 @@ RECEIPT/TAX INVOICE]]></text>
 					<font fontName="Monospaced" size="8" isBold="false" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
 				<text><![CDATA[email: info@ecosoft.co.th
-Tel: +66 (0) 2 105 6494]]></text>
+Tel: +66 (0) 61 860 1994]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="124" width="123" height="15"/>
