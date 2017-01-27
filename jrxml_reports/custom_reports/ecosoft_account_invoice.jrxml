@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Invoice" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="1.3636363636363749"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="48"/>
 	<property name="OPENERP_RELATIONS" value="[&quot;invoice_line&quot;]"/>
 	<style name="table" lineSpacing="Single">
 		<box topPadding="2" leftPadding="1" bottomPadding="1" rightPadding="1">
@@ -37,6 +37,7 @@
 	<parameter name="CUSTOM_REPORTS_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["/home/kittiu/workspace/openerp_ecosoft/ecosoft_addons/jrxml_reports/custom_reports/"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="COPY" class="java.lang.Integer" isForPrompting="false"/>
 	<queryString language="xPath">
 		<![CDATA[/data/record/]]>
 	</queryString>
@@ -128,7 +129,7 @@
 		<fieldDescription><![CDATA[partner_id/vat]]></fieldDescription>
 	</field>
 	<field name="branch" class="java.lang.String">
-		<fieldDescription><![CDATA[partner_id/branch]]></fieldDescription>
+		<fieldDescription><![CDATA[partner_id/taxbranch]]></fieldDescription>
 	</field>
 	<group name="UniqueID">
 		<groupExpression><![CDATA[$F{id}]]></groupExpression>
@@ -306,7 +307,9 @@ Tel: +66 (0) 61 860 1994]]></text>
 				<text><![CDATA[Tax ID. 0105554048641 สำนักงานใหญ่]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="362" y="98" width="193" height="20" forecolor="#80C243"/>
+				<reportElement x="362" y="98" width="193" height="20" forecolor="#80C243">
+					<printWhenExpression><![CDATA[$P{COPY} == 1]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right" lineSpacing="Single">
 					<font fontName="Monospaced" size="17" isBold="true" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
@@ -339,6 +342,15 @@ Tel: +66 (0) 61 860 1994]]></text>
 					<font fontName="Monospaced" size="9" isBold="false" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
 				<text><![CDATA[TAX ID : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="362" y="98" width="193" height="20" forecolor="#80C243">
+					<printWhenExpression><![CDATA[$P{COPY} != 1]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" lineSpacing="Single">
+					<font fontName="Monospaced" size="17" isBold="true" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[(COPY)]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
