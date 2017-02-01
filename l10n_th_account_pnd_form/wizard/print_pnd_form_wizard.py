@@ -18,16 +18,36 @@ class PrintPNDFormWizard(models.TransientModel):
         string='Calendar Period',
         required=True,
     )
+    print_format = fields.Selection(
+        [('pdf', 'PDF'),
+         ('xls', 'XLS'),
+         ('csv', 'CSV')],
+        string='Print Format',
+        default='pdf',
+        required=True,
+    )
 
     @api.multi
     def run_report(self):
         data = {'parameters': {}}
-        data_dict = {}
+        data_dict = {'no_header': False}
         report_name = False
         if self.income_tax_form == 'pnd53':
-            report_name = 'report_pnd53_form'
+            if self.print_format == 'pdf':
+                report_name = 'report_pnd53_form'
+            elif self.print_format == 'xls':
+                report_name = 'report_pnd53_form_xls'
+            elif self.print_format == 'csv':
+                data_dict['no_header'] = True
+                report_name = 'report_pnd53_form_csv'
         if self.income_tax_form == 'pnd3':
-            report_name = 'report_pnd3_form'
+            if self.print_format == 'pdf':
+                report_name = 'report_pnd3_form'
+            elif self.print_format == 'xls':
+                report_name = 'report_pnd3_form_xls'
+            elif self.print_format == 'csv':
+                data_dict['no_header'] = True
+                report_name = 'report_pnd3_form_csv'
         if not report_name:
             raise ValidationError(_('Selected form not found!'))
         data_dict['income_tax_form'] = self.income_tax_form
@@ -40,7 +60,7 @@ class PrintPNDFormWizard(models.TransientModel):
         data_dict['company_branch'] = company_branch
         data_dict['print_name'] = self.env.user.name or ''
         data_dict['print_position'] = \
-            self.env.user.employee_id.position_id.name or ''
+            self.env.user.employee_id.job_id.name or ''
         data['parameters'] = data_dict
         res = {
             'type': 'ir.actions.report.xml',
