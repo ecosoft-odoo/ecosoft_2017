@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Invoice" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="1.5000000000000027"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="336"/>
+	<property name="ireport.y" value="0"/>
 	<property name="OPENERP_RELATIONS" value="[&quot;invoice_line&quot;]"/>
 	<style name="table" lineSpacing="Single">
 		<box topPadding="2" leftPadding="1" bottomPadding="1" rightPadding="1">
@@ -70,6 +70,7 @@
 	<parameter name="PIDS" class="java.util.List">
 		<defaultValueExpression><![CDATA[$P{IDS}.toList()]]></defaultValueExpression>
 	</parameter>
+	<parameter name="COPY" class="java.lang.Integer" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[select (select sum(amount) from account_voucher_line where $X{IN, voucher_id, IDS}) as amount_with_vat,
 av.id, av.number as voucher_number, av.date, cur.name as currency, av.state,
@@ -388,13 +389,13 @@ Tel: +66 (0) 61 860 1994]]></text>
 				</textElement>
 				<text><![CDATA[Tax ID. 0105554048641 สำนักงานใหญ่]]></text>
 			</staticText>
-			<staticText>
+			<textField>
 				<reportElement x="436" y="88" width="119" height="20" forecolor="#80C243"/>
-				<textElement textAlignment="Right" lineSpacing="Single">
+				<textElement textAlignment="Right" lineSpacing="Single" markup="none">
 					<font fontName="Monospaced" size="17" isBold="true" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[(ORIGINAL)]]></text>
-			</staticText>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{COPY} == 1 ? "(ORIGINAL)" : "(COPY)"]]></textFieldExpression>
+			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="45" y="189" width="89" height="15"/>
 				<textElement verticalAlignment="Middle" lineSpacing="Single">
