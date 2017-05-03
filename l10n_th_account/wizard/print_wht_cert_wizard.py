@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from openerp import models, fields, api, _
 from openerp.exceptions import Warning as UserError
+from openerp.tools.float_utils import float_round as round
 from openerp.addons.l10n_th_account.models.account_voucher \
     import WHT_CERT_INCOME_TYPE, TAX_PAYER
 from openerp.addons.l10n_th_account.models.res_partner \
@@ -154,6 +155,7 @@ class PrintWhtCertWizard(models.TransientModel):
         data['type_6_tax'] = self._get_summary_by_type('tax', '6')
         data['type_6_desc'] = self._get_summary_by_type('desc', '6')
         data['signature'] = self.with_context(TH).env.user.name_get()[0][1]
+        print data['total_tax']
         return data
 
     @api.model
@@ -163,9 +165,9 @@ class PrintWhtCertWizard(models.TransientModel):
             wht_lines = wht_lines.filtered(lambda l:
                                            l.wht_cert_income_type == ttype)
         if column == 'base':
-            return sum([x.base for x in wht_lines])
+            return round(sum([x.base for x in wht_lines]), 2)
         if column == 'tax':
-            return sum([x.amount for x in wht_lines])
+            return round(sum([x.amount for x in wht_lines]), 2)
         if column == 'desc':
             descs = [x.wht_cert_income_desc for x in wht_lines]
             descs = filter(lambda x: x is not False and x != '', descs)
