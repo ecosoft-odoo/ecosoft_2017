@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from openerp import models, fields, api, _
-from openerp.exceptions import Warning as UserError
 from openerp.tools.float_utils import float_round as round
+from openerp.exceptions import Warning as UserError
 from openerp.addons.l10n_th_account.models.account_voucher \
     import WHT_CERT_INCOME_TYPE, TAX_PAYER
 from openerp.addons.l10n_th_account.models.res_partner \
@@ -72,6 +72,21 @@ class PrintWhtCertWizard(models.TransientModel):
         self.supplier_address = self._prepare_address(self.supplier_partner_id)
 
     @api.model
+    def _prepare_wht_line(self, voucher):
+        wht_lines = []
+        for line in voucher.tax_line_wht:
+            vals = {
+                'voucher_tax_id': line.id,
+                'invoice_id': line.invoice_id.id,
+                'wht_cert_income_type': line.wht_cert_income_type,
+                'wht_cert_income_desc': line.wht_cert_income_desc,
+                'base': -line.base,
+                'amount': -line.amount,
+            }
+            wht_lines.append((0, 0, vals))
+        return wht_lines
+
+    @api.model
     def default_get(self, fields):
         res = super(PrintWhtCertWizard, self).default_get(fields)
         active_model = self._context.get('active_model')
@@ -86,17 +101,7 @@ class PrintWhtCertWizard(models.TransientModel):
                                   supplier.income_tax_form)
         res['wht_sequence_display'] = voucher.wht_sequence_display
         res['tax_payer'] = (voucher.tax_payer or False)
-        res['wht_line'] = []
-        for line in voucher.tax_line_wht:
-            vals = {
-                'voucher_tax_id': line.id,
-                'invoice_id': line.invoice_id.id,
-                'wht_cert_income_type': line.wht_cert_income_type,
-                'wht_cert_income_desc': line.wht_cert_income_desc,
-                'base': -line.base,
-                'amount': -line.amount,
-            }
-            res['wht_line'].append((0, 0, vals))
+        res['wht_line'] = self._prepare_wht_line(voucher)
         return res
 
     @api.multi
@@ -134,6 +139,7 @@ class PrintWhtCertWizard(models.TransientModel):
         data['supplier_taxid'] = list(supplier_taxid)
         data['company_address'] = self.company_address
         data['supplier_address'] = self.supplier_address
+        data['pnd1'] = voucher.income_tax_form == 'pnd1' and 'X' or ''
         data['pnd3'] = voucher.income_tax_form == 'pnd3' and 'X' or ''
         data['pnd53'] = voucher.income_tax_form == 'pnd53' and 'X' or ''
         data['wht_sequence_display'] = voucher.wht_sequence_display
@@ -155,7 +161,6 @@ class PrintWhtCertWizard(models.TransientModel):
         data['type_6_tax'] = self._get_summary_by_type('tax', '6')
         data['type_6_desc'] = self._get_summary_by_type('desc', '6')
         data['signature'] = self.with_context(TH).env.user.name_get()[0][1]
-        print data['total_tax']
         return data
 
     @api.model

@@ -5,15 +5,24 @@ from openerp import fields, models, api
 class AccountTaxReportWizard(models.TransientModel):
     _name = 'account.tax.report.wizard'
 
-    period_id = fields.Many2one(
-        'account.period',
-        string='Period',
-        related='calendar_period_id.period_id',
+    period_type = fields.Selection(
+        [('specific', 'Specific Period'),
+         ('range', 'Period Range')],
+        string='Period Type',
+        default='specific',
+        required=True,
     )
     calendar_period_id = fields.Many2one(
         'account.period.calendar',
         string='Calendar Period',
-        required=True,
+    )
+    calendar_from_period_id = fields.Many2one(
+        'account.period',
+        string='Calendar Period From',
+    )
+    calendar_to_period_id = fields.Many2one(
+        'account.period',
+        string='Calendar Period To',
     )
     tax_id = fields.Many2one(
         'account.tax',
@@ -31,14 +40,40 @@ class AccountTaxReportWizard(models.TransientModel):
         required=True,
     )
 
+    @api.onchange('period_type')
+    def _onchange_pariod_type(self):
+        self.calendar_period_id = False
+        self.calendar_from_period_id = False
+        self.calendar_to_period_id = False
+
+    @api.onchange('calendar_from_period_id', 'calendar_to_period_id')
+    def _onchange_calendar_from_to_period_id(self):
+        if self.calendar_from_period_id and self.calendar_to_period_id:
+            if self.calendar_from_period_id.date_start > \
+                    self.calendar_to_period_id.date_start:
+                self.calendar_from_period_id = False
+                self.calendar_to_period_id = False
+                return {'warning': {
+                    'title': 'Incorrect Periods',
+                    'message': 'From period is later than to period!',
+                }}
+
     @api.multi
     def run_report(self):
         data = {'parameters': {}}
         report_name = self.print_format == 'pdf' and \
             'account_tax_report_pdf' or 'account_tax_report_xls'
-        period = self.calendar_period_id.period_id
+
+        period_ids = []
+        if self.period_type == 'specific':
+            period_ids = [self.calendar_period_id.id]
+        elif self.period_type == 'range':
+            domain = [('id', '>=', self.calendar_from_period_id.id),
+                      ('id', '<=', self.calendar_to_period_id.id)]
+            period_ids = self.env['account.period'].search(domain).ids
+
         # Params
-        data['parameters']['report_period_id'] = period.id
+        data['parameters']['period_ids'] = period_ids
         data['parameters']['tax_id'] = self.tax_id.id
         data['parameters']['doc_type'] = self.tax_id.type_tax_use
         # Display Params
