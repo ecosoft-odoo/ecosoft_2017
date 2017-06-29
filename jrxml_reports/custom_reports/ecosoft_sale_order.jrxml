@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Purchase Order" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
-	<property name="ireport.zoom" value="1.6500000000000126"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.zoom" value="1.2396694214876127"/>
+	<property name="ireport.x" value="81"/>
+	<property name="ireport.y" value="1081"/>
 	<property name="OPENERP_RELATIONS" value="[&quot;order_line&quot;]"/>
 	<style name="table" lineSpacing="Single">
 		<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
@@ -99,8 +99,8 @@
 	<field name="Subtotal-price_subtotal" class="java.lang.Number">
 		<fieldDescription><![CDATA[Order_Lines-order_line/Subtotal-price_subtotal]]></fieldDescription>
 	</field>
-	<field name="Additional_Disc_Amt-add_disc_amt" class="java.lang.Number">
-		<fieldDescription><![CDATA[Additional_Disc_Amt-add_disc_amt]]></fieldDescription>
+	<field name="add_disc_amt" class="java.lang.Number">
+		<fieldDescription><![CDATA[add_disc_amt]]></fieldDescription>
 	</field>
 	<field name="Net_Amount-amount_net" class="java.lang.Number">
 		<fieldDescription><![CDATA[Net_Amount-amount_net]]></fieldDescription>
@@ -140,37 +140,6 @@
 						<font fontName="Monospaced" size="9" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H"/>
 					</textElement>
 					<textFieldExpression class="java.lang.Number"><![CDATA[$F{Untaxed_Amount-amount_untaxed}]]></textFieldExpression>
-				</textField>
-			</band>
-			<band height="30">
-				<printWhenExpression><![CDATA[$F{Additional_Disc_Amt-add_disc_amt} > 0]]></printWhenExpression>
-				<textField>
-					<reportElement x="279" y="0" width="167" height="15"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle" lineSpacing="Single" markup="none">
-						<font fontName="Monospaced" size="9" isBold="false" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
-					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA["ส่วนลด/Discount " + $F{discount_percent}.floatValue().round(1) + "%"]]></textFieldExpression>
-				</textField>
-				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-					<reportElement style="table" mode="Transparent" x="451" y="0" width="104" height="15" backcolor="#80C243"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle" lineSpacing="Single">
-						<font fontName="Monospaced" size="9" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H"/>
-					</textElement>
-					<textFieldExpression class="java.lang.Number"><![CDATA[$F{Additional_Disc_Amt-add_disc_amt}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement x="279" y="15" width="167" height="15"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle" lineSpacing="Single">
-						<font fontName="Monospaced" size="9" isBold="false" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
-					</textElement>
-					<text><![CDATA[ยอดรวมหลังส่วนลด/Net total]]></text>
-				</staticText>
-				<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-					<reportElement style="table" mode="Opaque" x="451" y="15" width="104" height="15" backcolor="#80C243"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle" lineSpacing="Single">
-						<font fontName="Monospaced" size="9" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H"/>
-					</textElement>
-					<textFieldExpression class="java.lang.Number"><![CDATA[$F{Net_Amount-amount_net}]]></textFieldExpression>
 				</textField>
 			</band>
 			<band height="275">
@@ -289,54 +258,19 @@ Yours faithfully]]></text>
 	<background>
 		<band height="802" splitType="Stretch">
 			<rectangle>
-				<reportElement mode="Transparent" x="0" y="234" width="39" height="278">
-					<printWhenExpression><![CDATA[$F{Additional_Disc_Amt-add_disc_amt} == null || $F{Additional_Disc_Amt-add_disc_amt} == 0]]></printWhenExpression>
-				</reportElement>
+				<reportElement mode="Transparent" x="0" y="234" width="39" height="278"/>
 			</rectangle>
 			<rectangle>
-				<reportElement mode="Transparent" x="451" y="234" width="104" height="278">
-					<printWhenExpression><![CDATA[$F{Additional_Disc_Amt-add_disc_amt} == null || $F{Additional_Disc_Amt-add_disc_amt} == 0]]></printWhenExpression>
-				</reportElement>
+				<reportElement mode="Transparent" x="451" y="234" width="104" height="278"/>
 			</rectangle>
 			<rectangle>
-				<reportElement mode="Transparent" x="391" y="234" width="60" height="278">
-					<printWhenExpression><![CDATA[$F{Additional_Disc_Amt-add_disc_amt} == null || $F{Additional_Disc_Amt-add_disc_amt} == 0]]></printWhenExpression>
-				</reportElement>
+				<reportElement mode="Transparent" x="391" y="234" width="60" height="278"/>
 			</rectangle>
 			<rectangle>
-				<reportElement mode="Transparent" x="319" y="234" width="72" height="278">
-					<printWhenExpression><![CDATA[$F{Additional_Disc_Amt-add_disc_amt} == null || $F{Additional_Disc_Amt-add_disc_amt} == 0]]></printWhenExpression>
-				</reportElement>
+				<reportElement mode="Transparent" x="319" y="234" width="72" height="278"/>
 			</rectangle>
 			<rectangle>
-				<reportElement mode="Transparent" x="39" y="234" width="280" height="278">
-					<printWhenExpression><![CDATA[$F{Additional_Disc_Amt-add_disc_amt} == null || $F{Additional_Disc_Amt-add_disc_amt} == 0]]></printWhenExpression>
-				</reportElement>
-			</rectangle>
-			<rectangle>
-				<reportElement mode="Transparent" x="451" y="234" width="104" height="244">
-					<printWhenExpression><![CDATA[$F{Additional_Disc_Amt-add_disc_amt} > 0]]></printWhenExpression>
-				</reportElement>
-			</rectangle>
-			<rectangle>
-				<reportElement mode="Transparent" x="391" y="234" width="60" height="244">
-					<printWhenExpression><![CDATA[$F{Additional_Disc_Amt-add_disc_amt} > 0]]></printWhenExpression>
-				</reportElement>
-			</rectangle>
-			<rectangle>
-				<reportElement mode="Transparent" x="39" y="234" width="280" height="244">
-					<printWhenExpression><![CDATA[$F{Additional_Disc_Amt-add_disc_amt} > 0]]></printWhenExpression>
-				</reportElement>
-			</rectangle>
-			<rectangle>
-				<reportElement mode="Transparent" x="319" y="234" width="72" height="244">
-					<printWhenExpression><![CDATA[$F{Additional_Disc_Amt-add_disc_amt} > 0]]></printWhenExpression>
-				</reportElement>
-			</rectangle>
-			<rectangle>
-				<reportElement mode="Transparent" x="0" y="234" width="39" height="244">
-					<printWhenExpression><![CDATA[$F{Additional_Disc_Amt-add_disc_amt} > 0]]></printWhenExpression>
-				</reportElement>
+				<reportElement mode="Transparent" x="39" y="234" width="280" height="278"/>
 			</rectangle>
 		</band>
 	</background>
