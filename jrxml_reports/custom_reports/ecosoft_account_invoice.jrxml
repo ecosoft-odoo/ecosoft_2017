@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Invoice" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
-	<property name="ireport.zoom" value="1.3636363636363749"/>
+	<property name="ireport.zoom" value="1.1269722013523757"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="48"/>
+	<property name="ireport.y" value="1123"/>
 	<property name="OPENERP_RELATIONS" value="[&quot;invoice_line&quot;]"/>
 	<style name="table" lineSpacing="Single">
 		<box topPadding="2" leftPadding="1" bottomPadding="1" rightPadding="1">
@@ -140,19 +140,19 @@
 	<background>
 		<band height="802" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="240" width="39" height="276"/>
+				<reportElement x="0" y="240" width="39" height="306"/>
 			</rectangle>
 			<rectangle>
-				<reportElement x="39" y="240" width="292" height="276"/>
+				<reportElement x="39" y="240" width="292" height="306"/>
 			</rectangle>
 			<rectangle>
-				<reportElement x="331" y="240" width="60" height="276"/>
+				<reportElement x="331" y="240" width="60" height="306"/>
 			</rectangle>
 			<rectangle>
-				<reportElement x="391" y="240" width="60" height="276"/>
+				<reportElement x="391" y="240" width="60" height="306"/>
 			</rectangle>
 			<rectangle>
-				<reportElement x="451" y="240" width="104" height="276"/>
+				<reportElement x="451" y="240" width="104" height="306"/>
 			</rectangle>
 		</band>
 	</background>
@@ -438,57 +438,28 @@ Unit Price]]></text>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="287">
-			<staticText>
-				<reportElement x="282" y="31" width="164" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle" lineSpacing="Single">
-					<font fontName="Monospaced" size="9" isBold="true" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
-				</textElement>
-				<text><![CDATA[ยอดรวมหลังส่วนลด/Net total]]></text>
-			</staticText>
-			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-				<reportElement style="table" mode="Opaque" x="451" y="31" width="104" height="15" backcolor="#80C243"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle" lineSpacing="Single">
-					<font fontName="Monospaced" size="9" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H"/>
-				</textElement>
-				<textFieldExpression class="java.lang.Number"><![CDATA[$F{Net_Amount-amount_net}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="279" y="16" width="167" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle" lineSpacing="Single" markup="none">
-					<font fontName="Monospaced" size="9" isBold="false" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{add_disc} == null ? "ส่วนลด/Discount 0%" :
-"ส่วนลด/Discount " + $F{add_disc}.floatValue().round(1) + "%"]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-				<reportElement style="table" mode="Transparent" x="451" y="16" width="104" height="15" backcolor="#80C243"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle" lineSpacing="Single">
-					<font fontName="Monospaced" size="9" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H"/>
-				</textElement>
-				<textFieldExpression class="java.lang.Number"><![CDATA[$F{add_disc_amt}]]></textFieldExpression>
-			</textField>
+		<band height="257">
 			<subreport>
-				<reportElement stretchType="RelativeToTallestObject" x="282" y="46" width="273" height="15"/>
+				<reportElement stretchType="RelativeToTallestObject" x="282" y="16" width="273" height="15"/>
 				<dataSourceExpression><![CDATA[$P{EVENTS_DATA_SOURCE}]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "ecosoft_account_invoice_taxline.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement style="table" mode="Opaque" x="0" y="106" width="555" height="20" forecolor="#000000" backcolor="#80C243"/>
+				<reportElement style="table" mode="Opaque" x="0" y="76" width="555" height="20" forecolor="#000000" backcolor="#80C243"/>
 				<textElement verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Monospaced" size="9" isBold="true" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
 				<text><![CDATA[วิธีการชำระเงิน/Payment Method]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="225" width="270" height="25"/>
+				<reportElement x="0" y="195" width="270" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Monospaced" size="9" isBold="false" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
 				<text><![CDATA[ผู้มีอำนาจลงนาม / Authorisor]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table" x="0" y="126" width="555" height="72"/>
+				<reportElement style="table" x="0" y="96" width="555" height="72"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="Monospaced" size="9" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
@@ -499,14 +470,14 @@ or Kasikorn Bank, Sathorn Square. Account number 616 2 09861 4
 2. จ่ายเช็คขีดคร่อม/Account Payee cheque to "ecosoft co., ltd."]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table" mode="Opaque" x="0" y="198" width="555" height="20" forecolor="#000000" backcolor="#80C243"/>
+				<reportElement style="table" mode="Opaque" x="0" y="168" width="555" height="20" forecolor="#000000" backcolor="#80C243"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Monospaced" size="9" isBold="true" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
 				<text><![CDATA[ขอขอบพระคุณอย่างสูง/THANK YOU]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="249" width="270" height="15"/>
+				<reportElement x="0" y="219" width="270" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Monospaced" size="9" isBold="false" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
@@ -514,49 +485,49 @@ or Kasikorn Bank, Sathorn Square. Account number 616 2 09861 4
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="263" width="270" height="21"/>
+				<reportElement x="0" y="233" width="270" height="21"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Monospaced" size="9" isBold="false" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
 				<text><![CDATA[วันที่ / Date_____________________]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="0" y="249" width="270" height="15"/>
+				<reportElement x="0" y="219" width="270" height="15"/>
 				<textElement textAlignment="Center" lineSpacing="Single">
 					<font fontName="Monospaced" size="9" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{Name-name2}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="true">
-				<reportElement x="114" y="266" width="149" height="15"/>
+				<reportElement x="114" y="236" width="149" height="15"/>
 				<textElement lineSpacing="Single">
 					<font fontName="Monospaced" size="9" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
 				<textFieldExpression class="java.util.Date"><![CDATA[$F{Invoice_Date-date_invoice}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
-				<reportElement style="table" x="0" y="81" width="555" height="20"/>
+				<reportElement style="table" x="0" y="51" width="555" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Monospaced" size="9" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA["("+(new Scriptlet()).getAmtInWords((new BigDecimal($F{Total-amount_total}.toString())).setScale(2).toString(),"THB")+")"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="285" y="265" width="270" height="21"/>
+				<reportElement x="285" y="235" width="270" height="21"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Monospaced" size="9" isBold="false" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
 				<text><![CDATA[วันที่ / Date_____________________]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="285" y="225" width="270" height="25"/>
+				<reportElement x="285" y="195" width="270" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Monospaced" size="9" isBold="false" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
 				<text><![CDATA[ผู้รับ / Receiver]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="285" y="251" width="270" height="15"/>
+				<reportElement x="285" y="221" width="270" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Monospaced" size="9" isBold="false" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
@@ -564,14 +535,14 @@ or Kasikorn Bank, Sathorn Square. Account number 616 2 09861 4
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="282" y="61" width="164" height="15"/>
+				<reportElement x="282" y="31" width="164" height="15"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Monospaced" size="9" isBold="true" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
 				<text><![CDATA[ยอดสุทธิ/Net Amount]]></text>
 			</staticText>
 			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
-				<reportElement style="table" mode="Opaque" x="451" y="61" width="104" height="15" backcolor="#80C243"/>
+				<reportElement style="table" mode="Opaque" x="451" y="31" width="104" height="15" backcolor="#80C243"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Monospaced" size="9" isBold="true" pdfFontName="Garuda-Bold.ttf" pdfEncoding="Identity-H" isPdfEmbedded="false"/>
 				</textElement>
