@@ -8,7 +8,8 @@
 			<field name="arch" type="xml">
 				<field name="report_name" position="after">
 					<field name="jasper_output" />
-					<field name="copies" />
+					<field name="copies" attrs="{'invisible': [('jasper_output', '=', False)]}"/>
+					<field name="force_locale" attrs="{'invisible': [('jasper_output', '=', False)]}"/>
 					<button string="Update from attachments" name="update" type="object"
 						colspan="2" />
 				</field>
@@ -49,6 +50,7 @@
 						<field name="report_name" string="Report Name" />
 						<field name="jasper_output" required="True" />
 						<field name="copies" required="True" />
+						<field name="force_locale" />
 						<field name="jasper_report" invisible='1'/>
 					</group>
 					<group colspan="4" col='4'>
