@@ -48,10 +48,14 @@
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[$P{period_ids}.toList()]]></defaultValueExpression>
 	</parameter>
+	<parameter name="related_tax_ids" class="java.lang.Object" isForPrompting="false"/>
+	<parameter name="related_tax_pids" class="java.util.List" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{related_tax_ids}]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[select * from account_tax_report
 where doc_type = $P{doc_type}
-and tax_id = $P{tax_id}
+and $X{IN, tax_id, related_tax_pids}
 and $X{IN, report_period_id, period_pids}]]>
 	</queryString>
 	<field name="doc_type" class="java.lang.String"/>
