@@ -9,13 +9,13 @@
             <field name="arch" type="xml">
                 <form string="Account Financial Report">
                     <header>
-                        <button 
-                            name="print_report" 
-                            string="Print" 
+                        <button
+                            name="print_report"
+                            string="Print"
                             type="object"
                             class="oe_highlight" />
                         or
-                        <button 
+                        <button
                             type='special'
                             special='cancel'
                             string='_Cancel'
@@ -27,25 +27,25 @@
                     <group string="Company Info">
                         <label for="company_id"/>
                         <field name="company_id" on_change='onchange_company_id(company_id)' nolabel="1"/>
-                        <field name="currency_id" 
-                        domain="[('company_id','=',company_id)]" 
+                        <field name="currency_id"
+                        domain="[('company_id','=',company_id)]"
                         attrs="{'readonly':[('analytic_ledger','=',True)]}"/>
                     </group>
                     <group string="Report Info">
-                        <field 
-                            name="inf_type" 
+                        <field
+                            name="inf_type"
                             on_change='onchange_inf_type(inf_type)'
                             />
                         <field name="columns" on_change='onchange_columns(columns,fiscalyear,periods)'/>
-                        <field name="analytic_ledger"  
-                        attrs="{'readonly':['|',('columns','!=','four'),('inf_type','!=','BS')],}" 
+                        <field name="analytic_ledger"
+                        attrs="{'readonly':['|',('columns','!=','four'),('inf_type','!=','BS')],}"
                         on_change='onchange_analytic_ledger(company_id,analytic_ledger)'
                         />
-                        <field name="journal_ledger"  
-                        attrs="{'readonly':['|',('columns','!=','four'),('inf_type','!=','BS')],}" 
+                        <field name="journal_ledger"
+                        attrs="{'readonly':['|',('columns','!=','four'),('inf_type','!=','BS')],}"
                         />
-                        <field name="partner_balance"  
-                        attrs="{'readonly':['|',('columns','!=','four'),('inf_type','!=','BS')],}" 
+                        <field name="partner_balance"
+                        attrs="{'readonly':['|',('columns','!=','four'),('inf_type','!=','BS')],}"
                         />
                     </group>
                 </group>
@@ -72,10 +72,10 @@
                         </field>
                     </group>
                     <group string="Periods to Include">
-                        <field 
-                            name="periods" 
-                            nolabel="1" 
-                            domain="[('fiscalyear_id','=',fiscalyear),('special','=',False),('company_id','=',company_id)]"
+                        <field
+                            name="periods"
+                            nolabel="1"
+                            domain="[('fiscalyear_id','=',fiscalyear),('company_id','=',company_id)]"
                              attrs="{'readonly':[('columns','in',('qtr','thirteen'))],}">
                             <tree>
                                 <field name='code'/>
@@ -110,16 +110,16 @@
             <field name="view_id" ref="wizard_report_view"/>
             <field name="target">inline</field>
         </record>
-        
-        
-        <menuitem 
+
+
+        <menuitem
             id="menu_wizard_report"
             name="Account Financial Report (Multireports)"
             parent="account.final_accounting_reports"
             sequence="99"
             groups="account_financial_report.group_afreport"
             action="action_wizard_report"/>
-        
-        
+
+
     </data>
 </openerp>
