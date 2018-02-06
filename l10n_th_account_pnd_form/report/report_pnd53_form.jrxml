@@ -49,14 +49,15 @@ where wht_period_id = $P{wht_period_id} and income_tax_form = $P{income_tax_form
 	<field name="tax_total" class="java.math.BigDecimal"/>
 	<field name="title_th" class="java.lang.String"/>
 	<field name="supplier_name_th" class="java.lang.String"/>
+	<field name="supplier_city" class="java.lang.String"/>
+	<field name="supplier_postcode" class="java.lang.String"/>
 	<variable name="supplier_address" class="java.lang.String">
 		<variableExpression><![CDATA[(new Scriptlet()).getAddress(
     $F{supplier_street},
     $F{supplier_street2},
-    $F{supplier_township},
-    $F{supplier_district},
-    $F{supplier_province},
-    $F{supplier_zip})]]></variableExpression>
+    $F{supplier_city},
+    $F{supplier_postcode},
+    null, null)]]></variableExpression>
 	</variable>
 	<variable name="tax_payer" class="java.lang.String">
 		<variableExpression><![CDATA[$F{tax_payer} == "withholding" ? "1" : "3"]]></variableExpression>
