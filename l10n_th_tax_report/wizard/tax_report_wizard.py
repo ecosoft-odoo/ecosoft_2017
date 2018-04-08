@@ -30,7 +30,8 @@ class AccountTaxReportWizard(models.TransientModel):
         required=True,
         domain=[('type_tax_use', '!=', 'all'),
                 ('is_wht', '=', False),
-                ('is_undue_tax', '=', False)],
+                ('is_undue_tax', '=', False),
+                ('price_include', '=', False)],
     )
     print_format = fields.Selection(
         [('pdf', 'PDF'),
@@ -85,6 +86,13 @@ class AccountTaxReportWizard(models.TransientModel):
         data['parameters']['branch_vat'] = company.vat or ''
         data['parameters']['branch_taxbranch'] = company.taxbranch or ''
         data['parameters']['advance_sequence'] = False
+        # Related Tax Params
+        account_collected_id = self.tax_id.account_collected_id.id
+        tax_ids = self.tax_id.ids
+        if account_collected_id:
+            tax_ids = self.env['account.tax'].search(
+                [('account_collected_id', '=', account_collected_id)]).ids
+        data['parameters']['related_tax_ids'] = tax_ids
         res = {
             'type': 'ir.actions.report.xml',
             'report_name': report_name,

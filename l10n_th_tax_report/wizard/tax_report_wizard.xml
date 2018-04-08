@@ -11,7 +11,7 @@
                         <group>
                             <field name="tax_id" />
                             <field name="period_type" />
-                            <field name="calendar_period_id" attrs="{'invisible': [('period_type','!=','specific')],'required': [('period_type','!=','range')]}" />
+                            <field name="calendar_period_id" context="{'search_by_calendar_name': True}" attrs="{'invisible': [('period_type','!=','specific')],'required': [('period_type','!=','range')]}" />
                             <field name="calendar_from_period_id" attrs="{'invisible': [('period_type','!=','range')],'required': [('period_type','!=','specific')]}" />
                             <field name="calendar_to_period_id" attrs="{'invisible': [('period_type','!=','range')],'required': [('period_type','!=','specific')]}" />
                         </group>

@@ -200,6 +200,19 @@ class AccountPeriodCalendar(models.Model):
             """CREATE or REPLACE VIEW %s as (%s)""" %
             (self._table, "select * from account_period where special=false",))
 
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        if self._context.get('search_by_calendar_name', False):
+            if args is None:
+                args = []
+            domain = args + [('calendar_name', 'ilike', name)]
+            period = self.search(domain, limit=limit)
+            res = period.name_get()
+        else:
+            res = super(AccountPeriodCalendar, self).name_search(
+                name, args=args, operator=operator, limit=limit)
+        return res
+
 
 class AccountFiscalyear(models.Model):
     _inherit = 'account.fiscalyear'

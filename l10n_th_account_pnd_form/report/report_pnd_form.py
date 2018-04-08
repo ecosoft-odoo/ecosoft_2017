@@ -51,6 +51,12 @@ class ReportPNDForm(models.Model):
     supplier_street2 = fields.Char(
         string='Supplier Street2',
     )
+    supplier_city = fields.Char(
+        string='Supplier City',
+    )
+    supplier_postcode = fields.Char(
+        string='Supplier Postcode',
+    )
     supplier_township = fields.Char(
         string='Supplier Township',
     )
@@ -104,6 +110,8 @@ class ReportPNDForm(models.Model):
             emp.id as employee_id,
             rp.street as supplier_street,
             rp.street2 as supplier_street2,
+            rp.city as supplier_city,
+            rp.zip as supplier_postcode,
             ts.name as supplier_township,
             dt.name as supplier_district,
             pv.name as supplier_province,
@@ -128,7 +136,7 @@ class ReportPNDForm(models.Model):
         group by av.state, av.wht_sequence_display, av.number,
             av.date_value, av.income_tax_form, av.wht_period_id, av.id,
             av.tax_payer, rp.vat, rp.taxbranch, rp.id, rp.name,
-            rt.id, rt.name, emp.id, rp.street, rp.street2,
+            rt.id, rt.name, emp.id, rp.street, rp.street2, rp.city, rp.zip,
             ts.name, dt.name, pv.name, ts.zip, co.name
         ) a
         order by a.wht_sequence_display

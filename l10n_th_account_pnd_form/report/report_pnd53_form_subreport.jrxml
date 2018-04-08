@@ -45,8 +45,8 @@ where voucher_id = $P{voucher_id}]]>
 				</textElement>
 				<textFieldExpression class="java.util.Date"><![CDATA[$F{date_value}]]></textFieldExpression>
 			</textField>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement x="64" y="0" width="141" height="15"/>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement x="61" y="0" width="105" height="15"/>
 				<textElement verticalAlignment="Top" lineSpacing="Single">
 					<font fontName="Monospaced" size="10" pdfFontName="Garuda.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
