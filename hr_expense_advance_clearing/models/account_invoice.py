@@ -10,20 +10,26 @@ class AccountInvoice(models.Model):
     #     string='Advance Clearing?',
     #     copy=False,
     # )
-    invoice_type = fields.Selection(
-        selection_add=[
-            # Created from Normal Expense
-            ('expense_expense_invoice', 'For Employee Expense'),
-            # Created from Advance
-            ('expense_advance_invoice', 'For Employee Advance'),
-            # Created from Advance Clearing
-            ('advance_clearing_invoice', 'For Advance Clearing'),
-        ],
+    supplier_invoice_type = fields.Selection(
+        [('normal', 'Normal Invoice'),
+         # Created from Normal Expense
+         ('expense_expense_invoice', 'For Employee Expense'),
+         # Created from Advance
+         ('expense_advance_invoice', 'For Employee Advance'),
+         # Created from Advance Clearing
+         ('advance_clearing_invoice', 'For Advance Clearing'),
+         ],
+        string="Invoice Type",
+        readonly=True,
+        copy=False,
+        default='normal',
     )
     advance_expense_id = fields.Many2one(
         'hr.expense.expense',
         string="Advance Expense",
         copy=False,
+        readonly=True,
+        states={'draft': [('readonly', False)]},
         help="Refer to Employee Advance this invoice is clearing/return",
     )
 
@@ -35,36 +41,14 @@ class AccountInvoice(models.Model):
             ttype, partner_id, date_invoice=date_invoice,
             payment_term=payment_term, partner_bank_id=partner_bank_id,
             company_id=company_id)
-        if not res:
-            res = {}
-        if 'value' not in res:
-            res['value'] = {}
-        if 'domain' not in res:
-            res['domain'] = {}
-
         res['value'].update({'advance_expense_id': False})
-        if not partner_id:
-            domain = [('id', 'in', [])]
-            res['domain'].update({'advance_expense_id': domain})
-        else:
-            partner = self.env['res.partner'].browse(partner_id)
-            ref_employee_id = (partner.user_ids and
-                               partner.user_ids[0] and
-                               partner.user_ids[0].employee_ids and
-                               partner.user_ids[0].employee_ids[0].id or
-                               False)
-            domain = [('is_employee_advance', '=', True),
-                      ('state', 'in', ('open', 'paid')),
-                      ('employee_id', '=', ref_employee_id),
-                      ('amount_to_clearing', '>', 0.0)]
-            res['domain'].update({'advance_expense_id': domain})
         return res
 
     @api.onchange('advance_expense_id')
     def _onchange_advance_expense_id(self):
         # This method is called from Customer invoice to return money
         if self.advance_expense_id:
-            self.invoice_line = []
+            self.invoice_line = False
             advance_invoice = self.advance_expense_id.invoice_id
             if advance_invoice.invoice_line:
                 advance_line = advance_invoice.invoice_line[0]
@@ -108,10 +92,11 @@ class AccountInvoice(models.Model):
         result = super(AccountInvoice, self).invoice_validate()
         for invoice in self:
             # Advance case, send back the final approved amount
-            if invoice.invoice_type == 'expense_advance_invoice':
-                invoice.expense_id.amount_advanced = invoice.amount_total
+            if invoice.supplier_invoice_type == 'expense_advance_invoice':
+                invoice.expense_id.write({
+                    'amount_advanced': invoice.amount_total})
             # Clearing case, do reconcile
-            if invoice.invoice_type == 'advance_clearing_invoice'\
+            if invoice.supplier_invoice_type == 'advance_clearing_invoice'\
                     and not invoice.amount_total:
                 move_lines = \
                     self.env['account.move.line'].search(

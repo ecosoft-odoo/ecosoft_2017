@@ -1,38 +1,10 @@
 # -*- coding: utf-8 -*-
 from lxml import etree
 from openerp import models, fields, api, _
-from openerp.exceptions import ValidationError, Warning as UserError
+from openerp.exceptions import ValidationError
 import openerp.addons.decimal_precision as dp
 from openerp import tools
 import ast
-
-
-class HRExpenseLine(models.Model):
-    _inherit = "hr.expense.line"
-
-    is_advance_product_line = fields.Boolean('Advance Product Line')
-
-    @api.model
-    def _get_non_product_account_id(self):
-        # If Advance Line, get from setup account
-        if self.is_advance_product_line:
-            advance_account = \
-                self.env.user.company_id.employee_advance_account_id
-            if not advance_account:
-                raise UserError(
-                    _('No Employee Advance Code setup!'))
-            else:
-                return advance_account.id
-        else:
-            return super(HRExpenseLine, self)._get_non_product_account_id()
-
-    @api.model
-    def _prepare_analytic_line(self, reverse=False):
-        if self.is_advance_product_line:
-            return False
-        res = super(HRExpenseLine, self).\
-            _prepare_analytic_line(reverse=reverse)
-        return res
 
 
 class HRExpenseExpense(models.Model):
@@ -180,7 +152,7 @@ class HRExpenseExpense(models.Model):
     def expense_confirm(self):
         for expense in self:
             if not expense.is_advance_clearing and expense.amount <= 0.0:
-                raise UserError(_('This expense have no lines,\
+                raise ValidationError(_('This expense have no lines,\
                 or all lines with zero amount.'))
         return super(HRExpenseExpense, self).expense_confirm()
 
@@ -192,7 +164,7 @@ class HRExpenseExpense(models.Model):
                 expense.advance_expense_id.amount_to_clearing
         invoice_line = expense.advance_expense_id.invoice_id.invoice_line
         if not invoice_line:
-            raise UserError(_('No advance product line to reference'))
+            raise ValidationError(_('No advance product line to reference'))
         advance_line = invoice_line[0]
         advance_line.copy({'invoice_id': invoice.id,
                            'price_unit': -employee_advance,
@@ -200,22 +172,20 @@ class HRExpenseExpense(models.Model):
 
     @api.multi
     def _create_supplier_invoice_from_expense(self):
+        self.ensure_one()
         expense = self
+        invoice = super(HRExpenseExpense, self).\
+            _create_supplier_invoice_from_expense()
         if expense.is_advance_clearing:
-            invoice = super(HRExpenseExpense, self).\
-                _create_supplier_invoice_from_expense(merge_line=False)
             self._create_negative_clearing_line(expense, invoice)
-            # invoice.write({'is_advance_clearing': True,
-            #                'invoice_type': 'advance_clearing_invoice'})
-            invoice.write({'invoice_type': 'advance_clearing_invoice'})
+            invoice.write({'supplier_invoice_type':
+                           'advance_clearing_invoice'})
         elif expense.is_employee_advance:
-            invoice = super(HRExpenseExpense, self).\
-                _create_supplier_invoice_from_expense(merge_line=True)
-            invoice.write({'invoice_type': 'expense_advance_invoice'})
+            invoice.write({'supplier_invoice_type':
+                           'expense_advance_invoice'})
         else:
-            invoice = super(HRExpenseExpense, self).\
-                _create_supplier_invoice_from_expense(merge_line=False)
-            invoice.write({'invoice_type': 'expense_expense_invoice'})
+            invoice.write({'supplier_invoice_type':
+                           'expense_expense_invoice'})
         return invoice
 
     @api.model
@@ -224,6 +194,52 @@ class HRExpenseExpense(models.Model):
                 vals.get('number', '/') == '/':
             vals['number'] = self.env['ir.sequence'].get('hr.expense.advance')
         return super(HRExpenseExpense, self).create(vals)
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=80):
+        if self._context.get('advance_partner_id', False):
+            Partner = self.env['res.partner']
+            partner = Partner.browse(self._context['advance_partner_id'])
+            ref_employee_id = (partner.user_ids and
+                               partner.user_ids[0] and
+                               partner.user_ids[0].employee_ids and
+                               partner.user_ids[0].employee_ids[0].id or
+                               False)
+            domain = [('is_employee_advance', '=', True),
+                      ('state', 'in', ('open', 'paid')),
+                      ('employee_id', '=', ref_employee_id),
+                      ('amount_to_clearing', '>', 0.0)]
+            args += domain
+        return super(HRExpenseExpense, self).\
+            name_search(name=name, args=args, operator=operator, limit=limit)
+
+
+class HRExpenseLine(models.Model):
+    _inherit = "hr.expense.line"
+
+    is_advance_product_line = fields.Boolean('Advance Product Line')
+
+    @api.model
+    def _get_non_product_account_id(self):
+        # If Advance Line, get from setup account
+        if self.is_advance_product_line:
+            advance_account = \
+                self.env.user.company_id.employee_advance_account_id
+            if not advance_account:
+                raise ValidationError(
+                    _('No Employee Advance Code setup!'))
+            else:
+                return advance_account.id
+        else:
+            return super(HRExpenseLine, self)._get_non_product_account_id()
+
+    @api.model
+    def _prepare_analytic_line(self, reverse=False, currency=False):
+        if self.is_advance_product_line:
+            return False
+        res = super(HRExpenseLine, self).\
+            _prepare_analytic_line(reverse=reverse, currency=currency)
+        return res
 
 
 class HRExpenseClearing(models.Model):
@@ -287,7 +303,7 @@ class HRExpenseClearing(models.Model):
         (select %s
             from hr_expense_expense
             where state = 'accepted' and advance_expense_id is not null)
-        UNION
+        UNION ALL
             (select %s
             from (
                 select %s

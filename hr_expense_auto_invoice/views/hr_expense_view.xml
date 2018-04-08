@@ -15,16 +15,21 @@
 				<button name="action_view_move" position="attributes">
 					<attribute name="string">View Invoice</attribute>
 					<attribute name="class">oe_highlight</attribute>
+					<attribute name="states"></attribute>
+					<attribute name="attrs">{'invisible': [('invoice_ids', '=', [])]}</attribute>
 				</button>
 				<button name="action_view_move" position="after">
-					<button name="action_view_move" states="paid" string="View Invoices" type="object" groups="account.group_account_invoice"/>
+					<field name="invoice_ids" invisible="1"/>
 				</button>
 				<field name="name" position="after">
-					<field name="pay_to"/>
+					<label for="pay_to"/>
+					<div name="payto_div1">
+							<div name="payto_div2">
+									<field name="pay_to" class="oe_inline"/>
+							</div>
+					</div>
 					<field name="partner_id" attrs="{'invisible': ['|', ('pay_to', '!=', 'supplier'),
 																('partner_id', '=', False)]}"/>
-					<!--				<field name="is_invoiced" invisible="1"/-->
-					<!--                <field name="to_invoice_amount" invisible="1"/-->
 				</field>
 				<xpath expr='/form/sheet/notebook/page/field/tree/field[@name="total_amount"]' position="before">
 					<field name="tax_ids" widget="many2many_tags"/>

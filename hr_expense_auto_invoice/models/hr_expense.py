@@ -2,7 +2,7 @@
 from itertools import groupby
 from operator import itemgetter
 from openerp import models, fields, api, _
-from openerp.exceptions import Warning as UserError
+from openerp.exceptions import ValidationError
 from openerp.addons import decimal_precision as dp
 
 
@@ -90,6 +90,7 @@ class HRExpenseExpese(models.Model):
             'quantity': exp_line.unit_quantity,
             'product_id': exp_line.product_id.id or False,
             'invoice_line_tax_id': [(6, 0, exp_line.tax_ids.ids)],
+            'account_analytic_id': exp_line.analytic_account.id or False,
         }
 
     @api.model
@@ -105,7 +106,7 @@ class HRExpenseExpese(models.Model):
                                       ('company_id', '=',
                                        expense.company_id.id)])
             if not journal:
-                raise UserError(
+                raise ValidationError(
                     _("No expense journal found. Please make sure you "
                       "have a journal with type 'purchase' configured."))
             journal_id = journal[0].id
@@ -114,13 +115,13 @@ class HRExpenseExpese(models.Model):
             type, partner_id, expense.date_valid, payment_term=False,
             partner_bank_id=False, company_id=expense.company_id.id)['value']
 
-        invoice_ref_id = False
-        if expense.invoice_ids:
-            if any([invoice.state == 'cancel' for
-                    invoice in
-                    expense.invoice_ids]):
-                invoice_ids = expense.invoice_ids.ids
-                invoice_ref_id = invoice_ids[-1]
+        # invoice_ref_id = False
+        # if expense.invoice_ids:
+        #     if any([invoice.state == 'cancel' for
+        #             invoice in
+        #             expense.invoice_ids]):
+        #         invoice_ids = expense.invoice_ids.ids
+        #         invoice_ref_id = invoice_ids[-1]
 
         return {
             'origin': expense.number,
@@ -136,7 +137,7 @@ class HRExpenseExpese(models.Model):
             'currency_id': expense.currency_id.id,
             'journal_id': journal_id,
             'expense_id': expense.id,
-            'invoice_ref_id': invoice_ref_id,
+            # 'invoice_ref_id': invoice_ref_id,
         }
 
     @api.model
@@ -144,11 +145,11 @@ class HRExpenseExpese(models.Model):
         # Partner, account_id, payment_term
         if expense.pay_to == 'employee':
             if not expense.employee_id.user_id.partner_id:
-                raise UserError(
+                raise ValidationError(
                     _('The employee must have a valid user in system'))
             if not expense.employee_id.user_id.partner_id.\
                     property_account_payable:
-                raise UserError(
+                raise ValidationError(
                     _('The employee must have a payable account '
                       'set on referred user/partner.'))
         partner = (expense.pay_to == 'employee' and
@@ -166,7 +167,7 @@ class HRExpenseExpese(models.Model):
                 categ = exp_line.product_id.categ_id
                 account_id = categ.property_account_expense_categ.id
             if not account_id:
-                raise UserError(
+                raise ValidationError(
                     _('Define an expense account for this '
                       'product: "%s" (id:%d).') %
                     (exp_line.product_id.name, exp_line.product_id.id,))
@@ -199,29 +200,43 @@ class HRExpenseExpese(models.Model):
         return result
 
     @api.multi
-    def _create_supplier_invoice_from_expense(self, merge_line=False):
+    def _create_supplier_invoice_from_expense(self):
         self.ensure_one()
         Invoice = self.env['account.invoice']
+        InvoiceLine = self.env['account.invoice.line']
         expense = self
         invoice_vals = self._prepare_inv(expense)
-        inv_line_datas = []
+        inv_line_ids = []
+        # inv_line_datas = []
         for exp_line in expense.line_ids:
             account_id = self._choose_account_from_exp_line(
                 exp_line, invoice_vals['fiscal_position'])
-            inv_line_datas.append(self._prepare_inv_line(account_id, exp_line))
-        if merge_line and inv_line_datas:
-            keys = inv_line_datas[0].keys()
-            sum_keys = ['quantity']  # This field will be summed
-            str_keys = ['name']  # This field will be concatenate
-            group_keys = list(set(keys) - set(sum_keys) - set(str_keys))
-            inv_line_datas = \
-                self.merge_invoice_line(inv_line_datas, group_keys,
-                                        sum_keys, str_keys)
-
-        invoice_lines = []
-        for inv_line_data in inv_line_datas:
-            invoice_lines.append((0, 0, inv_line_data))
-        invoice_vals.update({'invoice_line': invoice_lines})
+            inv_line_data = self._prepare_inv_line(account_id, exp_line)
+            # if not merge_line:
+            inv_line = InvoiceLine.create(inv_line_data)
+            inv_line_ids.append(inv_line.id)
+            exp_line.write({'invoice_line_ids': [(4, inv_line.id)]})
+            # else:
+            #     inv_line_datas.append(inv_line_data)
+        # if merge_line and inv_line_datas:
+        #     keys = inv_line_datas[0].keys()
+        #     sum_keys = ['quantity']  # This field will be summed
+        #     str_keys = ['name']  # This field will be concatenate
+        #     group_keys = list(set(keys) - set(sum_keys) - set(str_keys))
+        #     inv_line_datas = \
+        #         self.merge_invoice_line(inv_line_datas, group_keys,
+        #                                 sum_keys, str_keys)
+        #     # if len(inv_line_datas) > 1:
+    #     #     # With multiple line, we still can't link to expense_line YET!
+    #     #     # It could with more effort, but this case shouldn't happen
+        #     #     raise ValidationError(
+    #     #         _('Merging into multiple invoice lines is not supported!'))
+        #     inv_line_data = inv_line_datas[0]
+        #     for exp_line in expense.line_ids:
+        #         inv_line = InvoiceLine.create(inv_line_data)
+        #         inv_line_ids.append(inv_line.id)
+        #         exp_line.write({'invoice_line_ids': [(4, inv_line.id)]})
+        invoice_vals.update({'invoice_line': [(6, 0, inv_line_ids)]})
         # Create Invoice
         invoice = Invoice.create(invoice_vals)
         # Set due date
@@ -236,7 +251,7 @@ class HRExpenseExpese(models.Model):
         for expense in self:
             if 'is_advance_clearing' not in expense:
                 if expense.amount <= 0.0:
-                    raise UserError(_('This expense have no lines,\
+                    raise ValidationError(_('This expense have no lines,\
                     or all lines with zero amount.'))
         return super(HRExpenseExpese, self).expense_confirm()
 
@@ -345,7 +360,7 @@ class HRExpenseLine(models.Model):
             for invoice_line in expense_line.invoice_line_ids:
                 invoice = invoice_line.invoice_id
                 if invoice.state and invoice.state not in ['draft', 'cancel']:
-                    # Invoiced Qty in PO Line's UOM
+                    # Invoiced Qty in Exp Line's UOM
                     open_invoiced_qty += \
                         Uom._compute_qty(invoice_line.uos_id.id,
                                          invoice_line.quantity,
