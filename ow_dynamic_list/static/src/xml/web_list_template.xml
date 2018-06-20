@@ -1,0 +1,37 @@
+<templates>
+    <t t-name="ListView.columns">
+        <span>
+        <button class="oe_dropdown_toggle oe_dropdown_arrow">
+            Columns
+            <i class="fa fa-caret-down"/>
+        </button>
+
+        <ul id="dynamicList" class="oe_dropdown_menu th_ul" style="overflow:scroll;height:40em;width: 20em;margin-left: -105px;">
+            <li class="list-group-item no-sort">
+                <input class="form-control" id="dycolsrch" autofocus="autofocus" type="text" placeholder="Search Column" autocomplete="off" data-seq="-1" />
+            </li>
+            <li role="separator" class="divider no-sort"></li>
+            <t t-foreach="fields" t-as="field">
+                <li class="list-group-item" id="dycollist" t-att-data-search-term="field.data_string">
+                    <span class="dytext"><t t-esc="field.string"/></span>
+                    <div class="material-switch pull-right">
+                        <input type="checkbox" t-att-id="field.name" t-attf-class="columnCheckbox oe_dynamic_column oe_dynamic_column_#{field.name}"
+                               t-att-name="field.name" data-seq="100"/>
+                        <label t-att-for="field.name" class="label-primary"></label>
+                    </div>
+                </li>
+            </t>
+        </ul>
+        </span>
+    </t>
+
+    <t t-name="th_list_reset">
+        <li role="separator" class="divider no-sort" style="margin:0"></li>
+        <li class="list-group-item no-sort text-center">
+            <div class="btn-group">
+              <button id="restore_list" type="button" class="oe_button oe_list_add oe_highlight" title="Restore list"><i class="fa fa-refresh"/> Restore</button>
+            </div>
+        </li>
+    </t>
+
+</templates>

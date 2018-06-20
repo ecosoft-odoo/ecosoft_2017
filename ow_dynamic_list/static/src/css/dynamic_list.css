@@ -1,0 +1,75 @@
+#th_columns .dropdown-menu{
+    min-width: 250px;
+    height: 300px;
+    margin-left: -200px !important;
+    overflow-y: scroll;
+    overflow-x: hidden; 
+}
+.th_ul span{
+	cursor: move;
+}
+
+.dytext{
+    display: block;
+    width: 160px;
+}
+
+.ui-state-highlight { height: 3em; line-height: 2em;}
+
+/* #th_columns{
+	padding-left: 5px;
+} */
+
+.list-group-item{
+	padding: 10px 10px !important;
+	border: none;
+}
+
+.material-switch{
+    margin-top: -10%;
+}
+
+.material-switch > input[type="checkbox"] {
+    display: none;
+}
+
+.material-switch > label {
+    cursor: pointer;
+    height: 0px;
+    position: relative; 
+    width: 40px;  
+}
+
+.material-switch > label::before {
+    background: rgb(0, 0, 0);
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    content: '';
+    height: 16px;
+    margin-top: -8px;
+    position:absolute;
+    opacity: 0.3;
+    transition: all 0.1s ease-in-out;
+    width: 40px;
+}
+.material-switch > label::after {
+    background: rgb(255, 255, 255);
+    border-radius: 16px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    content: '';
+    height: 24px;
+    left: -4px;
+    margin-top: -8px;
+    position: absolute;
+    top: -4px;
+    transition: all 0.1s ease-in-out;
+    width: 24px;
+}
+.material-switch > input[type="checkbox"]:checked + label::before {
+    background: inherit;
+    opacity: 0.5;
+}
+.material-switch > input[type="checkbox"]:checked + label::after {
+    background: inherit;
+    left: 20px;
+}
