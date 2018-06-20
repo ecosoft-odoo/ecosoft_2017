@@ -181,7 +181,7 @@ openerp.ow_dynamic_list = function (instance) {
             self.$DColReset.find('#restore_list').click(function(e){
                 var uid = self.session.uid;
                 var th_model = new instance.web.Model("dynamic.fields");
-                th_model.call('search', [[["view_id", "=", self.fields_view.view_id],["user_id", "=", uid]]]).then(function(results){
+                th_model.call('search', [[["view_id", "=", self.view_id],["user_id", "=", uid]]]).then(function(results){
                     if (!_.isEmpty(results)){
                         th_model.call('unlink', results, {}).done(function(){
                             location.reload();
