@@ -25,7 +25,7 @@
     'author': 'OdooWare Services',
     'website': 'http://odooware.com',
     'category': 'Web',
-    'version': '2.2',
+    'version': '2.3',
     'license': 'AGPL-3',
     'depends': ['web'],
     'price': 299,

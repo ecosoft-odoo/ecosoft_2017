@@ -59,7 +59,6 @@ openerp.ow_dynamic_list = function (instance) {
             self.th_fields_view = data;
             var col_values = self.prepare_col_vals();
             self.fetch_invisible_fields(data);
-
             if (self.th_columns.length> 0){
                 self.render_fields();
                 this._super(self.th_fields_view);
@@ -67,7 +66,6 @@ openerp.ow_dynamic_list = function (instance) {
             else{
                 this._super(data);
             }
-
             if(!self.$DColumns){
                 self.$DColumns = $(QWeb.render("ListView.columns",{'fields': col_values}));
                 self.$pager.append(self.$DColumns);
@@ -250,15 +248,14 @@ openerp.ow_dynamic_list = function (instance) {
                 return typeof value.name != 'undefined';
             })
 
-
-			th_model.call('search', [[["view_id", "=", self.fields_view.view_id],["user_id", "=", uid]]]).then(function(results){
+			th_model.call('search', [[["view_id", "=", self.view_id],["user_id", "=", uid]]]).then(function(results){
 				if(results.length==1){
 					th_model.call('write', [results, {
         				'dynamic_list_text': JSON.stringify(self.col_list),
         			}]);
         		}else{
         			th_model.call('create', [{
-        				'view_id': self.fields_view.view_id,
+        				'view_id': self.view_id,
         				'dynamic_list_text': JSON.stringify(self.col_list),
         				'user_id': uid,
         			}]);
